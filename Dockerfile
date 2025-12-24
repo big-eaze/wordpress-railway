@@ -1,9 +1,10 @@
 FROM wordpress:php8.2-fpm
 
-RUN apt-get update && apt-get install -y nginx \
- && rm /etc/nginx/sites-enabled/default
+RUN apt-get update \
+ && apt-get install -y nginx \
+ && rm -f /etc/nginx/sites-enabled/default
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/sites-enabled/default
 
 EXPOSE 80
 
