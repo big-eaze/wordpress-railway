@@ -10,4 +10,5 @@ COPY nginx.conf /etc/nginx/templates/default.conf.template
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "envsubst '$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && php-fpm -D && nginx -g 'daemon off;'"]
+
+CMD ["sh", "-c", "echo \"PORT=$PORT\" && envsubst '$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -t && php-fpm -D && nginx -g 'daemon off;'"]
