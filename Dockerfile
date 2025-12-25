@@ -1,16 +1,16 @@
 FROM wordpress:php8.2-fpm
 
-# Install nginx
+# Install nginx + envsubst
 RUN apt-get update \
-    && apt-get install -y nginx \
+    && apt-get install -y nginx gettext-base \
     && rm -rf /var/lib/apt/lists/* \
     && rm -f /etc/nginx/sites-enabled/default
 
-# Copy nginx config
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy nginx template
+COPY nginx.conf /etc/nginx/templates/default.conf.template
 
-# Railway uses dynamic ports
+# Expose Railway port (symbolic)
 EXPOSE 8080
 
-# Start both services correctly
-CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
+# Start services with env substitution
+CMD ["sh", "-c", "envsubst '$PORT' < /etc/nginx/templates/default.conf.template > /etc/nginx/conf.d/default.conf && php-fpm -D && nginx -g 'daemon off;'"]
