@@ -1,17 +1,16 @@
-# Use PHP-FPM WordPress image
 FROM wordpress:php8.2-fpm
 
-# Install Nginx and remove default site
+# Install nginx
 RUN apt-get update \
     && apt-get install -y nginx \
-    && rm -f /etc/nginx/sites-enabled/default \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -f /etc/nginx/sites-enabled/default
 
-# Copy custom Nginx config
-COPY nginx.conf /etc/nginx/sites-enabled/default
+# Copy nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80
-EXPOSE 80
+# Railway uses dynamic ports
+EXPOSE 8080
 
-# Start PHP-FPM and Nginx in foreground
-CMD ["sh", "-c", "php-fpm && nginx -g 'daemon off;'"]
+# Start both services correctly
+CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
